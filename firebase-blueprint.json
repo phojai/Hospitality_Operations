@@ -1,0 +1,124 @@
+{
+  "entities": {
+    "Property": {
+      "title": "Property",
+      "description": "Homestay property location definition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "tagline": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "pincode": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "gstin": { "type": "string" },
+        "isDefault": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "address", "city", "state", "phone", "email"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Homestay room inventory record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "roomNumber": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "capacity": { "type": "number" },
+        "pricePerNight": { "type": "number" },
+        "amenities": { "type": "array" },
+        "status": { "type": "string" },
+        "notes": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "images": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "roomNumber", "name", "type", "capacity", "pricePerNight", "status"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Guest reservation record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bookingNumber": { "type": "string" },
+        "confirmationCode": { "type": "string" },
+        "roomId": { "type": "string" },
+        "guestName": { "type": "string" },
+        "guestMobile": { "type": "string" },
+        "guestEmail": { "type": "string" },
+        "numberOfGuests": { "type": "number" },
+        "checkInDate": { "type": "string" },
+        "checkOutDate": { "type": "string" },
+        "nights": { "type": "number" },
+        "baseRatePerNight": { "type": "number" },
+        "taxAmount": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string" },
+        "bookingSource": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "bookingNumber", "roomId", "guestName", "checkInDate", "checkOutDate", "totalAmount", "status"]
+    },
+    "GuestProfile": {
+      "title": "GuestProfile",
+      "description": "Guest contact and stay history profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "mobile": { "type": "string" },
+        "email": { "type": "string" },
+        "totalStays": { "type": "number" },
+        "totalNights": { "type": "number" },
+        "totalSpend": { "type": "number" },
+        "lastStayDate": { "type": "string" },
+        "isVIP": { "type": "boolean" }
+      },
+      "required": ["id", "name", "mobile"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User account and tenant role assignment",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "assignedPropertyIds": { "type": "array" }
+      },
+      "required": ["uid", "email", "role", "tenantId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user accounts and assigned tenant permissions"
+    },
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Collection of homestay property locations"
+    },
+    "/rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Collection of room inventory records"
+    },
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Collection of guest reservation records"
+    },
+    "/guests/{guestId}": {
+      "schema": "GuestProfile",
+      "description": "Collection of guest profiles"
+    }
+  }
+}

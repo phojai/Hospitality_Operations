@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default catch-all rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidProperty(data) {
+      return data.id is string
+        && data.name is string && data.name.size() <= 200
+        && data.address is string
+        && data.city is string
+        && data.state is string
+        && data.phone is string
+        && data.email is string;
+    }
+
+    function isValidRoom(data) {
+      return data.id is string
+        && data.roomNumber is string
+        && data.name is string && data.name.size() <= 200
+        && data.type is string
+        && data.capacity is number && data.capacity > 0
+        && data.pricePerNight is number && data.pricePerNight >= 0
+        && data.status in ['active', 'deactivated', 'archived'];
+    }
+
+    function isValidBooking(data) {
+      return data.id is string
+        && data.bookingNumber is string
+        && data.roomId is string
+        && data.guestName is string && data.guestName.size() <= 200
+        && data.checkInDate is string
+        && data.checkOutDate is string
+        && data.totalAmount is number && data.totalAmount >= 0;
+    }
+
+    function isValidGuest(data) {
+      return data.id is string
+        && data.name is string && data.name.size() <= 200
+        && data.mobile is string;
+    }
+
+    function isValidUser(data) {
+      return data.uid is string
+        && data.email is string
+        && data.role in ['super_admin', 'owner', 'manager', 'staff']
+        && data.tenantId is string;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isValidId(userId) && isValidUser(incoming());
+      allow delete: if isValidId(userId);
+    }
+
+    // Properties collection
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow create, update: if isValidId(propertyId) && isValidProperty(incoming());
+      allow delete: if isValidId(propertyId);
+    }
+
+    // Rooms collection
+    match /rooms/{roomId} {
+      allow read: if true;
+      allow create, update: if isValidId(roomId) && isValidRoom(incoming());
+      allow delete: if isValidId(roomId);
+    }
+
+    // Bookings collection
+    match /bookings/{bookingId} {
+      allow read: if true;
+      allow create, update: if isValidId(bookingId) && isValidBooking(incoming());
+      allow delete: if isValidId(bookingId);
+    }
+
+    // Guests collection
+    match /guests/{guestId} {
+      allow read: if true;
+      allow create, update: if isValidId(guestId) && isValidGuest(incoming());
+      allow delete: if isValidId(guestId);
+    }
+  }
+}
